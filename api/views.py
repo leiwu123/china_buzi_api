@@ -1,7 +1,25 @@
-from django.shortcuts import render
+from django.shortcuts import render, HttpResponse
 from django.http import JsonResponse
 from rest_framework.views import APIView
+# from rest_framework.request import Request
+from rest_framework import exceptions
 from api import models
+
+ORDER_DICT = {
+    1:{
+        'name':"piano",
+        'age': 18,
+        'gender': '女',
+        'content': '...'
+    },
+    2:{
+        'name':"violin",
+        'age': 33,
+        'gender': '男',
+        'content': 'hall'
+    },
+
+}
 
 def md5(user):        #### generating random string
     import hashlib
@@ -14,6 +32,7 @@ def md5(user):        #### generating random string
     return m.hexdigest()
 
 class AuthView(APIView):
+    """For user login"""
 
     def post(self, request, *args, **kwargs):
         print(list(request._request.POST))
@@ -42,3 +61,52 @@ class AuthView(APIView):
             ret['msg'] = '请求异常'
             
         return JsonResponse(ret)
+
+class Authentication(object):
+
+    def authenticate(self, request):
+        token = request._request.GET.get('token')
+        token_obj = models.UserToken.objects.filter(token=token).first()
+        if not token_obj:
+            raise exceptions.AuthenticationFailed('用户认证失败')
+
+        return (token_obj.user, token_obj)  
+        """ 
+        return them to request for subsequent request by the browser
+        token_obj.user  -> request.user
+        token_obj  -> request.auth
+        """
+
+    def authenticate_header(self, request):  ## will cause error without this
+        pass
+
+class OrderView(APIView):
+    """for customer orders"""
+
+    authentication_classes = [Authentication, ]
+
+    def get(self, request, *args, **kwargs):
+        # token = request._request.GET.get('token')
+        # if not token:
+        #     return HttpResponse('用户未登录')
+
+        # self.dispatch
+
+        # request.user
+        # request.auth
+        ret = {
+            'code':1000, 
+            'msg': None
+        }
+        try: 
+            ret['data'] = ORDER_DICT
+        except Exception as e:
+            pass
+        return JsonResponse(ret)
+
+class UserInfoView(APIView):
+
+    authentication_classes = [Authentication,]
+
+    def get(self, request, *args, **kwargs):
+        return HttpResponse('用户信息')
