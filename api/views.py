@@ -106,9 +106,12 @@ class OrderView(APIView):
             pass
         return JsonResponse(ret)
 
+
+from rest_framework.authentication import BaseAuthentication, BasicAuthentication
+
 class UserInfoView(APIView):
 
-    # authentication_classes = [Authentication,]
+    authentication_classes = [BasicAuthentication,]
 
     def get(self, request, *args, **kwargs):
         print(request.user)

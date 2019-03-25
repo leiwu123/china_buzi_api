@@ -1,15 +1,16 @@
 from rest_framework import exceptions
 from api import models
+from rest_framework.authentication import BaseAuthentication
 
 
-class FirstAuthentication(object):
+class FirstAuthentication(BaseAuthentication):
     def authenticate(self, request):
         pass
 
     def authenticate_header(self, request):
         pass
 
-class Authentication(object):
+class Authentication(BaseAuthentication):
 
     def authenticate(self, request):
         token = request._request.GET.get('token')
@@ -25,4 +26,4 @@ class Authentication(object):
         """
 
     def authenticate_header(self, request):  ## will cause error without this
-        pass
+        return 'Basic realm="api"'
