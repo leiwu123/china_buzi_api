@@ -120,3 +120,11 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
 
 STATIC_URL = '/static/'
+
+REST_FRAMEWORK = {
+    "DEFAULT_AUTHENTICATION_CLASSES":['api.utils.auth.FirstAuthentication',],
+    "UNAUTHENTICATED_USER": lambda : "匿名用户",
+    # "UNAUTHENTICATED_USER": None
+    # "UNAUTHENTICATED_TOKEN": lambda : "32132",
+    "UNAUTHENTICATED_TOKEN": None
+}

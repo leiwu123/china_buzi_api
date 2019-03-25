@@ -34,6 +34,8 @@ def md5(user):        #### generating random string
 class AuthView(APIView):
     """For user login"""
 
+    authentication_classes = []
+
     def post(self, request, *args, **kwargs):
         print(list(request._request.POST))
         print(request.method)
@@ -62,28 +64,28 @@ class AuthView(APIView):
             
         return JsonResponse(ret)
 
-class Authentication(object):
+# class Authentication(object):
 
-    def authenticate(self, request):
-        token = request._request.GET.get('token')
-        token_obj = models.UserToken.objects.filter(token=token).first()
-        if not token_obj:
-            raise exceptions.AuthenticationFailed('用户认证失败')
+#     def authenticate(self, request):
+#         token = request._request.GET.get('token')
+#         token_obj = models.UserToken.objects.filter(token=token).first()
+#         if not token_obj:
+#             raise exceptions.AuthenticationFailed('用户认证失败')
 
-        return (token_obj.user, token_obj)  
-        """ 
-        return them to request for subsequent request by the browser
-        token_obj.user  -> request.user
-        token_obj  -> request.auth
-        """
+#         return (token_obj.user, token_obj)  
+#         """ 
+#         return them to request for subsequent request by the browser
+#         token_obj.user  -> request.user
+#         token_obj  -> request.auth
+#         """
 
-    def authenticate_header(self, request):  ## will cause error without this
-        pass
+#     def authenticate_header(self, request):  ## will cause error without this
+#         pass
 
 class OrderView(APIView):
     """for customer orders"""
 
-    authentication_classes = [Authentication, ]
+    # authentication_classes = [Authentication, ]
 
     def get(self, request, *args, **kwargs):
         # token = request._request.GET.get('token')
@@ -106,7 +108,9 @@ class OrderView(APIView):
 
 class UserInfoView(APIView):
 
-    authentication_classes = [Authentication,]
+    # authentication_classes = [Authentication,]
 
     def get(self, request, *args, **kwargs):
+        print(request.user)
+        print(request.auth)
         return HttpResponse('用户信息')
