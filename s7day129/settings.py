@@ -122,9 +122,13 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 REST_FRAMEWORK = {
-    "DEFAULT_AUTHENTICATION_CLASSES":['api.utils.auth.FirstAuthentication',],
+    "DEFAULT_AUTHENTICATION_CLASSES":['api.utils.auth.FirstAuthentication','api.utils.auth.Authentication',],
+    # "DEFAULT_PERMISSION_CLASSES":['api.utils.permission.SVIPPermission','api.utils.permission.MyPermission1',],
     "UNAUTHENTICATED_USER": lambda : "匿名用户",
     # "UNAUTHENTICATED_USER": None
     # "UNAUTHENTICATED_TOKEN": lambda : "32132",
-    "UNAUTHENTICATED_TOKEN": None
+    "UNAUTHENTICATED_TOKzhouxiaotongEN": None,
+    # "FORM_METHOD_OVERRIDE": None,
+    # "FORM_CONTENT_OVERRIDE": None,
+    # "FORM_CONTENTTYPE_OVERRIDE": None
 }

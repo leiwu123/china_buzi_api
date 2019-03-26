@@ -26,4 +26,5 @@ class Authentication(BaseAuthentication):
         """
 
     def authenticate_header(self, request):  ## will cause error without this
-        return 'Basic realm="api"'
+        pass
+        # return 'Basic realm="api"'

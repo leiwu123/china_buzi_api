@@ -3,6 +3,7 @@ from django.http import JsonResponse
 from rest_framework.views import APIView
 # from rest_framework.request import Request
 from rest_framework import exceptions
+from api.utils.permission import SVIPPermission, MyPermission1
 from api import models
 
 ORDER_DICT = {
@@ -18,7 +19,6 @@ ORDER_DICT = {
         'gender': '男',
         'content': 'hall'
     },
-
 }
 
 def md5(user):        #### generating random string
@@ -37,20 +37,19 @@ class AuthView(APIView):
     authentication_classes = []
 
     def post(self, request, *args, **kwargs):
-        print(list(request._request.POST))
-        print(request.method)
-        print(request.body)
+        # print(list(request._request))
+        # print(request.method)
+        # print(request.body)
         ret = { 'code': 1000, 'msg': None }
         try: 
             user = request._request.POST.get('username')
-            # user = request._request.POST['username'
 
-            print(user)
+            # print(user)
 
             pwd = request._request.POST.get('password')
-            print(pwd)
+            # print(pwd)
             obj = models.UserInfo.objects.filter(username=user, password=pwd).first()
-            print(obj)
+            # print(obj)
             if not obj:
                 ret['code'] = 1001
                 ret['msg'] = "用户名或密码错误"
@@ -83,22 +82,22 @@ class AuthView(APIView):
 #         pass
 
 class OrderView(APIView):
-    """for customer orders"""
+    """for customer orders (for SVIP only)"""
 
     # authentication_classes = [Authentication, ]
+    permission_classes = [SVIPPermission,]
 
     def get(self, request, *args, **kwargs):
-        # token = request._request.GET.get('token')
-        # if not token:
-        #     return HttpResponse('用户未登录')
 
-        # self.dispatch
-
-        # request.user
-        # request.auth
+        if request.user.user_type != 3:
+            print(request.user.username)
+            return HttpResponse('无权访问')
+       
+        # print(request.user.username)
         ret = {
             'code':1000, 
-            'msg': None
+            'msg': None,
+            'data': None
         }
         try: 
             ret['data'] = ORDER_DICT
@@ -106,14 +105,16 @@ class OrderView(APIView):
             pass
         return JsonResponse(ret)
 
-
-from rest_framework.authentication import BaseAuthentication, BasicAuthentication
+# from rest_framework.authentication import BaseAuthentication, BasicAuthentication
 
 class UserInfoView(APIView):
 
-    authentication_classes = [BasicAuthentication,]
+    # authentication_classes = [BasicAuthentication,]
+    permission_classes = [MyPermission1,]
 
     def get(self, request, *args, **kwargs):
-        print(request.user)
-        print(request.auth)
+        if request.user.user_type == 3:
+            return HttpResponse('无权访问')
+        # print(request.user)
+        # print(request.auth)
         return HttpResponse('用户信息')
