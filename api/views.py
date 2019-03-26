@@ -31,11 +31,47 @@ def md5(user):        #### generating random string
     m.update(bytes(ctime, encoding='utf-8'))
     return m.hexdigest()
 
+from rest_framework.throttling import BaseThrottle
+import time
+
+VISIT_RECORD = {}
+
+class VisitThrottle(BaseThrottle):
+
+    def __init__(self):
+        self.history = None
+
+    def allow_request(self, request, view):
+        # remote_addr = request._request.META.get('REMOTE_ADDR')
+        remote_addr = request.META.get('REMOTE_ADDR')
+        ctime = time.time()
+        if remote_addr not in VISIT_RECORD:
+            VISIT_RECORD[remote_addr] = [ctime,]
+            return True
+
+        history = VISIT_RECORD.get(remote_addr)
+        self.history = history
+
+        while history and history[-1] < ctime - 60:  ## only 3 visits per 10 seconds allowed
+            history.pop()
+
+        if len(history) < 3:
+            history.insert(0, ctime)
+            return True
+        # return True # return false meaning visit freqency too high, being limited 
+        # return True
+
+    def wait(self):
+        ctime = time.time()
+        return 60 - (ctime - self.history[-1])
+
+
 class AuthView(APIView):
     """For user login"""
 
     authentication_classes = []
     permission_classes = []
+    throttle_classes = [VisitThrottle, ]
 
     def post(self, request, *args, **kwargs):
         # print(list(request._request))
