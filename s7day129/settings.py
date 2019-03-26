@@ -123,7 +123,7 @@ STATIC_URL = '/static/'
 
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES":['api.utils.auth.FirstAuthentication','api.utils.auth.Authentication',],
-    # "DEFAULT_PERMISSION_CLASSES":['api.utils.permission.SVIPPermission','api.utils.permission.MyPermission1',],
+    "DEFAULT_PERMISSION_CLASSES":['api.utils.permission.SVIPPermission',],
     "UNAUTHENTICATED_USER": lambda : "匿名用户",
     # "UNAUTHENTICATED_USER": None
     # "UNAUTHENTICATED_TOKEN": lambda : "32132",

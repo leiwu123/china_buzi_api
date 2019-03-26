@@ -35,6 +35,7 @@ class AuthView(APIView):
     """For user login"""
 
     authentication_classes = []
+    permission_classes = []
 
     def post(self, request, *args, **kwargs):
         # print(list(request._request))
@@ -59,7 +60,7 @@ class AuthView(APIView):
             ret['token'] = token
         except Exception as e:
             ret['code'] = 1002
-            ret['msg'] = '请求异常'
+            ret['msg'] = '请求异常访问'
             
         return JsonResponse(ret)
 
@@ -85,13 +86,13 @@ class OrderView(APIView):
     """for customer orders (for SVIP only)"""
 
     # authentication_classes = [Authentication, ]
-    permission_classes = [SVIPPermission,]
+    # permission_classes = [SVIPPermission,]
 
     def get(self, request, *args, **kwargs):
 
-        if request.user.user_type != 3:
-            print(request.user.username)
-            return HttpResponse('无权访问')
+        # if request.user.user_type != 3:
+        #     print(request.user.username)
+        #     return HttpResponse('无权访问')
        
         # print(request.user.username)
         ret = {
