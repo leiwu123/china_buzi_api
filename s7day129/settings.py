@@ -123,12 +123,14 @@ STATIC_URL = '/static/'
 
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES":['api.utils.auth.FirstAuthentication','api.utils.auth.Authentication',],
-    "DEFAULT_PERMISSION_CLASSES":['api.utils.permission.SVIPPermission',],
     "UNAUTHENTICATED_USER": lambda : "匿名用户",
     # "UNAUTHENTICATED_USER": None
     # "UNAUTHENTICATED_TOKEN": lambda : "32132",
-    "UNAUTHENTICATED_TOKzhouxiaotongEN": None,
-    # "FORM_METHOD_OVERRIDE": None,
-    # "FORM_CONTENT_OVERRIDE": None,
-    # "FORM_CONTENTTYPE_OVERRIDE": None
+    "UNAUTHENTICATED_TOKEN": None,
+    "DEFAULT_PERMISSION_CLASSES":['api.utils.permission.SVIPPermission',],
+    "DEFAULT_THROTTLE_CLASSES":['api.utils.throttle.UserThrottle',],
+    "DEFAULT_THROTTLE_RATES": {
+        "Luffy":"3/m",
+        "LuffyUser": "10/m",
+    }
 }
